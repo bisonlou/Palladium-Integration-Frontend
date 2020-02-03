@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://192.168.0.247'; 
+export const BASE_URL = 'http://127.0.0.1'; 
 
 export const formatDate = (rawDate) => {
     const longDateTime = new Date(rawDate);

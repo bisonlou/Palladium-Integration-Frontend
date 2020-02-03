@@ -68,7 +68,7 @@ const Main = () => {
         console.log('before---->', data)
 
         fetch(
-            'http://127.0.0.1:5000/',
+            'http://192.168.0.247:8080/',
             {
                 method: 'POST',
                 body: JSON.stringify(data),

@@ -19,16 +19,8 @@ const useStyles = makeStyles({
         margin: 10,
         cursor: 'pointer'
     },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
-    },
     title: {
-        fontSize: 14,
-    },
-    pos: {
-        marginBottom: 12,
+        fontSize: 16,
     },
 });
 
@@ -37,21 +29,26 @@ const useStyles = makeStyles({
 const Main = () => {
     const classes = useStyles();
 
-    const [showImport, setShowImport] = useState(false)
+    const [showPayrollImport, setShowPayrollImport] = useState(false)
     const [journalDate, setjournalDate] = useState(dateToString(new Date()))
     const [month, setMonth] = useState(new Date().getMonth())
     const [year, setYear] = useState(new Date().getFullYear())
+    const [loading, setLoading] = useState(false)
     const [years, setYears] = useState([])
 
 
     useEffect(() => {
         fetch(`${BASE_URL}:8080/years`)
-        .then(response => response.json())
-        .then(data => setYears(data['data']))
+            .then(response => response.json())
+            .then(data => setYears(data['data']))
     }, [])
 
-    const handleImportOpen = () => {
-        setShowImport(true);
+    const handlePayrollImportOpen = () => {
+        setShowPayrollImport(true);
+    }
+
+    const handlePopoverCloseClick = () => {
+        setShowPayrollImport(false);
     }
 
     const handleValueChange = event => {
@@ -70,6 +67,8 @@ const Main = () => {
     };
 
     const handleImportClick = () => {
+        setLoading(true);
+
         const data = {
             'month': month,
             'year': year,
@@ -86,37 +85,36 @@ const Main = () => {
             }
         )
             .then(response => response.json())
-            .then(data => console.log(data))
+            .then(data => setLoading(false))
     }
 
     return (
         <div className="App">
             <NavBar />
-            
+
             <Card
                 className={classes.card}
-                onClick={handleImportOpen}
+                onClick={handlePayrollImportOpen}
             >
                 <img src={importImg} alt="import image" style={{ height: 200 }} />
                 <CardContent>
-                    <Typography className={classes.title} variant="h4" color="textSecondary" gutterBottom>
+                    <Typography className={classes.title} variant="h5" gutterBottom>
                         Payroll Import
                     </Typography>
                 </CardContent>
             </Card>
-            {
-                showImport && (
-                    <PayrolImport
-                        year={year}
-                        years={years}
-                        month={month}
-                        journalDate={journalDate}
-                        onImportClick={handleImportClick}
-                        onValueChange={handleValueChange}
-                        onJournalDateChange={handleJournalDateChange}
-                    />
-                )
-            }
+            <PayrolImport
+                year={year}
+                years={years}
+                month={month}
+                loading={loading}
+                open={showPayrollImport}
+                journalDate={journalDate}
+                onImportClick={handleImportClick}
+                onValueChange={handleValueChange}
+                onPopoverCloseClick={handlePopoverCloseClick}
+                onJournalDateChange={handleJournalDateChange}
+            />
         </div>
     );
 }

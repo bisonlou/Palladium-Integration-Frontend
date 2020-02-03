@@ -1,11 +1,11 @@
 import React from 'react';
+
 import {
-    Popover, Grid, Button, withStyles
+    Popover, Grid, Button, withStyles, IconButton,
+    InputLabel, MenuItem, FormControl, Select, CircularProgress
 } from '@material-ui/core';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+
+import CloseIcon from '@material-ui/icons/Close';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
@@ -16,19 +16,22 @@ import ImportStyles from './importStyles';
 
 
 const Payrollimport = ({
+    open,
     year,
     years,
     month,
     classes,
+    loading,
     journalDate,
     onImportClick,
     onValueChange,
-    onJournalDateChange
+    onJournalDateChange,
+    onPopoverCloseClick,
 }) => {
 
     return (
         <Popover
-            open={true}
+            open={open}
             anchorReference="anchorPosition"
             anchorPosition={{ top: 100, left: 600 }}
             anchorOrigin={{
@@ -44,6 +47,22 @@ const Payrollimport = ({
                 <Typography className={classes.error}>
                 </Typography>
             </Grid> */}
+            <Grid
+                container
+                justify="flex-end"
+                className={classes.header}
+            >
+                <grid item xs={3}>
+                    <IconButton
+                        size="small"
+                        aria-label="delete"
+                        className={classes.margin}
+                        onClick={onPopoverCloseClick}
+                    >
+                        <CloseIcon color={"secondary"} />
+                    </IconButton>
+                </grid>
+            </Grid>
 
             <Grid className={classes.row}>
                 <FormControl className={classes.formControl}>
@@ -64,7 +83,7 @@ const Payrollimport = ({
                         <MenuItem value={6}>June</MenuItem>
                         <MenuItem value={7}>July</MenuItem>
                         <MenuItem value={8}>August</MenuItem>
-                        <MenuItem value={9}>Septembver</MenuItem>
+                        <MenuItem value={9}>September</MenuItem>
                         <MenuItem value={10}>October</MenuItem>
                         <MenuItem value={11}>November</MenuItem>
                         <MenuItem value={12}>December</MenuItem>
@@ -82,14 +101,14 @@ const Payrollimport = ({
                         className={classes.selectField}
                         onChange={onValueChange}
                     >{
-                        years.map(year =>(
-                            <MenuItem
-                                key={year}
-                                value={year}
-                            >
-                                {year}
-                            </MenuItem>
-                        ))
+                            years.map(year => (
+                                <MenuItem
+                                    key={year}
+                                    value={year}
+                                >
+                                    {year}
+                                </MenuItem>
+                            ))
                         }
                     </Select>
                 </FormControl>
@@ -113,20 +132,33 @@ const Payrollimport = ({
                 </FormControl>
             </Grid>
 
-            <Grid container justify="center">
-                <Grid item xs={4}>
-                    <Button
-                        variant="contained"
-                        size="small"
-                        color="primary"
-                        className={classes.button}
-                        onClick={onImportClick}
-                    >
-                        Import
-                    </Button>
+            <Grid container justify="center" className={classes.row}>
+                <Grid item xs={8}>
+                    {
+                        loading ? (
+                            <Grid container item xs={12} justify="center">
+                                <Grid item>
+                                    <CircularProgress
+                                        color="secondary"
+                                        className={classes.button}
+                                    />
+                                </Grid>
+                            </Grid>
+                        ) : (
+                                <Button
+                                    variant="contained"
+                                    size="medium"
+                                    color="primary"
+                                    className={classes.button}
+                                    onClick={onImportClick}
+                                >
+                                    Import
+                                </Button>
+                            )
+                    }
                 </Grid>
             </Grid>
-        </Popover>
+        </Popover >
     )
 }
 

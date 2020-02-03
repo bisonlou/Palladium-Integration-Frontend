@@ -18,6 +18,10 @@ const ImportStyles = ({
         width: 200
     },
 
+    header: {
+        padding: 10,
+    },
+
     selectField: {
         width: 200,
     },
@@ -26,21 +30,13 @@ const ImportStyles = ({
         marginLeft: 10,
     },
 
-    dateLabel: {
-        fontSize: 16,
-    },
-
-    selectLabel: {
-        marginLeft: 10,
-    },
-
     button: {
         paddingLeft: 10,
         paddingRight: 10,
         marginTop: 10,
+        width: '100%',
         marginBottom: 10,
-        marginLeft: 10,
-    }
+    },
 
 });
 

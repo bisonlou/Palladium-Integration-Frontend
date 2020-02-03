@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import PayrolImport from '../../components/payrollImport';
-import { BASE_URL, formatDate } from '../../utils';
+import { BASE_URL, formatDate, dateToString } from '../../utils';
 
 import importImg from '../../import.jpg'
 
@@ -35,9 +35,17 @@ const Main = () => {
     const classes = useStyles();
 
     const [showImport, setShowImport] = useState(false)
-    const [journalDate, setjournalDate] = useState(Date.now())
-    const [month, setMonth] = useState(1)
-    const [year, setYear] = useState(2020)
+    const [journalDate, setjournalDate] = useState(dateToString(new Date()))
+    const [month, setMonth] = useState(new Date().getMonth())
+    const [year, setYear] = useState(new Date().getFullYear())
+    const [years, setYears] = useState([])
+
+
+    useEffect(() => {
+        fetch(`${BASE_URL}:8080/years`)
+        .then(response => response.json())
+        .then(data => setYears(data['data']))
+    }, [])
 
     const handleImportOpen = () => {
         setShowImport(true);
@@ -62,13 +70,10 @@ const Main = () => {
         const data = {
             'month': month,
             'year': year,
-            'jounal_date': journalDate
+            'journal_date': journalDate
         };
 
-        console.log('before---->', data)
-
-        fetch(
-            'http://192.168.0.247:8080/',
+        fetch(`${BASE_URL}:8080/`,
             {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -98,6 +103,7 @@ const Main = () => {
                 showImport && (
                     <PayrolImport
                         year={year}
+                        years={years}
                         month={month}
                         journalDate={journalDate}
                         onImportClick={handleImportClick}

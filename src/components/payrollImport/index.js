@@ -16,10 +16,11 @@ import ImportStyles from './importStyles';
 
 
 const Payrollimport = ({
+    year,
+    years,
+    month,
     classes,
     journalDate,
-    month,
-    year,
     onImportClick,
     onValueChange,
     onJournalDateChange
@@ -80,10 +81,16 @@ const Payrollimport = ({
                         value={year}
                         className={classes.selectField}
                         onChange={onValueChange}
-                    >
-                        <MenuItem value={2019}>2019</MenuItem>
-                        <MenuItem value={2020}>2020</MenuItem>
-                        <MenuItem value={2021}>2021</MenuItem>
+                    >{
+                        years.map(year =>(
+                            <MenuItem
+                                key={year}
+                                value={year}
+                            >
+                                {year}
+                            </MenuItem>
+                        ))
+                        }
                     </Select>
                 </FormControl>
             </Grid>

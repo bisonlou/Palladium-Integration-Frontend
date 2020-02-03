@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import PayrolImport from '../../components/payrollImport';
+import NavBar from '../../components/NavBar';
+
 import { BASE_URL, formatDate, dateToString } from '../../utils';
 
 import importImg from '../../import.jpg'
@@ -88,6 +91,8 @@ const Main = () => {
 
     return (
         <div className="App">
+            <NavBar />
+            
             <Card
                 className={classes.card}
                 onClick={handleImportOpen}

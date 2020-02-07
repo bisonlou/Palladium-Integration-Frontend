@@ -38,7 +38,7 @@ const Main = () => {
 
 
     useEffect(() => {
-        fetch(`${BASE_URL}:8080/years`)
+        fetch(`${BASE_URL}/years`)
             .then(response => response.json())
             .then(data => setYears(data['data']))
     }, [])
@@ -75,7 +75,7 @@ const Main = () => {
             'journal_date': journalDate
         };
 
-        fetch(`${BASE_URL}:8080/`,
+        fetch(`${BASE_URL}/`,
             {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -96,7 +96,7 @@ const Main = () => {
                 className={classes.card}
                 onClick={handlePayrollImportOpen}
             >
-                <img src={importImg} alt="import image" style={{ height: 200 }} />
+                <img src={importImg} alt="payroll import" style={{ height: 200 }} />
                 <CardContent>
                     <Typography className={classes.title} variant="h5" gutterBottom>
                         Payroll Import

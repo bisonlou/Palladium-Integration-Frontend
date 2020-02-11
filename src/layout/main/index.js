@@ -33,6 +33,7 @@ const Main = () => {
     const classes = useStyles();
 
     const [showPayrollImport, setShowPayrollImport] = useState(false)
+    const [showStationery, setShowStationery] = useState(false)
     const [journalDate, setjournalDate] = useState(dateToString(new Date()))
     const [month, setMonth] = useState(new Date().getMonth())
     const [year, setYear] = useState(new Date().getFullYear())
@@ -48,6 +49,10 @@ const Main = () => {
 
     const handlePayrollImportOpen = () => {
         setShowPayrollImport(true);
+    }
+
+    const handleStationeryOpen = () => {
+        setShowStationery(true);
     }
 
     const handlePopoverCloseClick = () => {
@@ -94,18 +99,22 @@ const Main = () => {
     return (
         <div className="App">
             <NavBar />
+            <Grid container >
+                <Grid item xs={3}>
+                    <PayrollImportCard
+                        classes={classes}
+                        onCardClick={handlePayrollImportOpen}
+                    />
+                </Grid>
 
-            <Card
-                className={classes.card}
-                onClick={handlePayrollImportOpen}
-            >
-                <img src={importImg} alt="payroll import" style={{ height: 200 }} />
-                <CardContent>
-                    <Typography className={classes.title} variant="h5" gutterBottom>
-                        Payroll Import
-                    </Typography>
-                </CardContent>
-            </Card>
+                <Grid item xs={3}>
+                    <StationeryRequisitionCard
+                        classes={classes}
+                        onCardClick={handleStationeryOpen}
+                    />
+                </Grid>
+            </Grid>
+
             <PayrolImport
                 year={year}
                 years={years}
@@ -117,6 +126,10 @@ const Main = () => {
                 onValueChange={handleValueChange}
                 onPopoverCloseClick={handlePopoverCloseClick}
                 onJournalDateChange={handleJournalDateChange}
+            />
+
+            <Stationery
+                open={showStationery}
             />
         </div>
     );

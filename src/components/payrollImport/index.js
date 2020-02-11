@@ -4,7 +4,6 @@ import {
     Popover, Grid, Button, withStyles, IconButton,
     InputLabel, MenuItem, FormControl, Select, CircularProgress
 } from '@material-ui/core';
-
 import CloseIcon from '@material-ui/icons/Close';
 import DateFnsUtils from '@date-io/date-fns';
 import {

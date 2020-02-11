@@ -63,7 +63,7 @@ const Main = () => {
     }
 
     const handleJournalDateChange = date => {
-        setjournalDate(formatDate(date));
+        setjournalDate(dateToString(date));
     };
 
     const handleImportClick = () => {

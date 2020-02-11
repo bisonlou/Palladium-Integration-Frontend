@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
+// third party components
+import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+// custom components
 import PayrolImport from '../../components/payrollImport';
+import PayrollImportCard from '../../components/Cards/payrollImport';
+import StationeryRequisitionCard from '../../components/Cards/stationeryRequisition';
+import Stationery from '../../components/Stationery';
 import NavBar from '../../components/NavBar';
 
-import { BASE_URL, formatDate, dateToString } from '../../utils';
+// utils
+import { BASE_URL, dateToString } from '../../utils';
 
-import importImg from '../../import.jpg'
 
 const useStyles = makeStyles({
     card: {
@@ -63,7 +66,7 @@ const Main = () => {
     }
 
     const handleJournalDateChange = date => {
-        setjournalDate(formatDate(date));
+        setjournalDate(dateToString(date));
     };
 
     const handleImportClick = () => {

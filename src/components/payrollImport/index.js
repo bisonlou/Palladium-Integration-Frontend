@@ -120,9 +120,8 @@ const Payrollimport = ({
                         <KeyboardDatePicker
                             margin="normal"
                             id="date-picker-dialog"
-                            format="MM/dd/yyyy"
+                            format="dd/mm/yy"
                             name="journal-date"
-                            value={journalDate}
                             onChange={onJournalDateChange}
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',

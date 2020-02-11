@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 // third party components
-import { Grid } from '@material-ui/core';
+import { Grid, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import MuiAlert from '@material-ui/lab/Alert';
 
 // custom components
 import PayrolImport from '../../components/payrollImport';
@@ -32,13 +33,21 @@ const useStyles = makeStyles({
 const Main = () => {
     const classes = useStyles();
 
-    const [showPayrollImport, setShowPayrollImport] = useState(false)
-    const [showStationery, setShowStationery] = useState(false)
-    const [journalDate, setjournalDate] = useState(dateToString(new Date()))
-    const [month, setMonth] = useState(new Date().getMonth())
-    const [year, setYear] = useState(new Date().getFullYear())
-    const [loading, setLoading] = useState(false)
-    const [years, setYears] = useState([])
+    const [showPayrollImport, setShowPayrollImport] = useState(false);
+    const [showStationery, setShowStationery] = useState(false);
+    const [journalDate, setjournalDate] = useState(dateToString(new Date()));
+    const [month, setMonth] = useState(new Date().getMonth());
+    const [year, setYear] = useState(new Date().getFullYear());
+    const [loading, setLoading] = useState(false);
+    const [years, setYears] = useState([]);
+    const [error, setError] = useState({
+        'isError': false,
+        'message': ''
+    });
+    const [message, setMessage] = useState({
+        'isMessage': false,
+        'message': ''
+    });
 
 
     useEffect(() => {
@@ -93,12 +102,82 @@ const Main = () => {
             }
         )
             .then(response => response.json())
-            .then(data => setLoading(false))
+            .then(data => {
+                if (data['success'] === true) {
+                    setLoading(false);
+                    setMessage({
+                        'isMessage': true,
+                        'message': 'Import successful'
+                    });
+                } else {
+                    setLoading(false);
+                    setError({
+                        'isError': true,
+                        'message': data['description']
+                    });
+                }
+                
+            })
     }
+
+    const handleSnackBarClose = (_, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setError({
+            'isError': false,
+            'message': ''
+        });
+
+        setMessage({
+            'isMessage': false,
+            'message': ''
+        });
+    };
 
     return (
         <div className="App">
             <NavBar />
+
+            {
+                error.isError && (
+                    <Snackbar
+                        open={error.isError}
+                        autoHideDuration={6000}
+                        onClose={handleSnackBarClose}
+                    >
+                        <MuiAlert
+                            elevation={6}
+                            variant="filled"
+                            onClose={handleSnackBarClose}
+                            severity="error"
+                        >
+                            {error.message}
+                        </MuiAlert>
+                    </Snackbar>
+                )
+            }
+
+{
+                message.isMessage && (
+                    <Snackbar
+                        open={message.isMessage}
+                        autoHideDuration={6000}
+                        onClose={handleSnackBarClose}
+                    >
+                        <MuiAlert
+                            elevation={6}
+                            variant="filled"
+                            onClose={handleSnackBarClose}
+                            severity="success"
+                        >
+                            {message.message}
+                        </MuiAlert>
+                    </Snackbar>
+                )
+            }
+
             <Grid container >
                 <Grid item xs={3}>
                     <PayrollImportCard

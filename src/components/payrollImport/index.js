@@ -115,7 +115,7 @@ const Payrollimport = ({
                         <KeyboardDatePicker
                             margin="normal"
                             id="date-picker-dialog"
-                            format="dd/mm/yy"
+                            format="MM/dd/yyyy"
                             name="journal-date"
                             onChange={onJournalDateChange}
                             KeyboardButtonProps={{

@@ -43,10 +43,6 @@ const Payrollimport = ({
                 horizontal: 'left',
             }}
         >
-            {/* <Grid>
-                <Typography className={classes.error}>
-                </Typography>
-            </Grid> */}
             <Grid
                 container
                 justify="flex-end"

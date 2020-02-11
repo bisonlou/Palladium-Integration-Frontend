@@ -21,10 +21,12 @@ export const formatDate = (rawDate) => {
 export const dateToString = date => {
   const mm = date.getMonth() + 1;
   const dd = date.getDate();
+  const yy = date.getFullYear().toString().substr(-2)
 
-  return [date.getFullYear(),
-  (mm > 9 ? '' : '0') + mm,
-  (dd > 9 ? '' : '0') + dd
+  return [
+    (dd > 9 ? '' : '0') + dd,
+    (mm > 9 ? '' : '0') + mm,
+    yy,
   ].join('-');
 };
 

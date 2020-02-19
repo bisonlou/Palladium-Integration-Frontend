@@ -21,7 +21,6 @@ const Payrollimport = ({
     month,
     classes,
     loading,
-    journalDate,
     onImportClick,
     onValueChange,
     onJournalDateChange,
@@ -96,7 +95,8 @@ const Payrollimport = ({
                         className={classes.selectField}
                         onChange={onValueChange}
                     >{
-                            years.map(year => (
+                            // years.map(year => (
+                            [].map(year => (
                                 <MenuItem
                                     key={year}
                                     value={year}

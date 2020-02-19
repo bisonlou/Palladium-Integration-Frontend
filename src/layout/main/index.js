@@ -116,7 +116,7 @@ const Main = () => {
                         'message': data['description']
                     });
                 }
-                
+
             })
     }
 
@@ -136,47 +136,42 @@ const Main = () => {
         });
     };
 
+    const handleStationeryClose = () => {
+        setShowStationery(false);
+    };
+
     return (
         <div className="App">
             <NavBar />
+            <Snackbar
+                open={error.isError}
+                autoHideDuration={6000}
+                onClose={handleSnackBarClose}
+            >
+                <MuiAlert
+                    elevation={6}
+                    variant="filled"
+                    onClose={handleSnackBarClose}
+                    severity="error"
+                >
+                    {error.message}
+                </MuiAlert>
+            </Snackbar>
 
-            {
-                error.isError && (
-                    <Snackbar
-                        open={error.isError}
-                        autoHideDuration={6000}
-                        onClose={handleSnackBarClose}
-                    >
-                        <MuiAlert
-                            elevation={6}
-                            variant="filled"
-                            onClose={handleSnackBarClose}
-                            severity="error"
-                        >
-                            {error.message}
-                        </MuiAlert>
-                    </Snackbar>
-                )
-            }
-
-{
-                message.isMessage && (
-                    <Snackbar
-                        open={message.isMessage}
-                        autoHideDuration={6000}
-                        onClose={handleSnackBarClose}
-                    >
-                        <MuiAlert
-                            elevation={6}
-                            variant="filled"
-                            onClose={handleSnackBarClose}
-                            severity="success"
-                        >
-                            {message.message}
-                        </MuiAlert>
-                    </Snackbar>
-                )
-            }
+            <Snackbar
+                open={message.isMessage}
+                autoHideDuration={6000}
+                onClose={handleSnackBarClose}
+            >
+                <MuiAlert
+                    elevation={6}
+                    variant="filled"
+                    onClose={handleSnackBarClose}
+                    severity="success"
+                >
+                    {message.message}
+                </MuiAlert>
+            </Snackbar>
 
             <Grid container >
                 <Grid item xs={3}>
@@ -209,6 +204,7 @@ const Main = () => {
 
             <Stationery
                 open={showStationery}
+                handleClose={handleStationeryClose}
             />
         </div>
     );

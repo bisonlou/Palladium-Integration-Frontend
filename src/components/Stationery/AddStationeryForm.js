@@ -7,10 +7,13 @@ import CloseIcon from '@material-ui/icons/Close';
 
 
 const AddStationeryForm = ({
+    item,
     open,
     classes,
     loading,
-    onImportClick,
+    onEditClick,
+    onSaveClick,
+    onTextChange,
     onPopoverCloseClick,
 }) => {
 
@@ -43,10 +46,22 @@ const AddStationeryForm = ({
             </Grid>
 
             <Grid className={classes.row}>
-                <TextField label="Name" variant="outlined" />
+                <TextField
+                    label="Name"
+                    name="name"
+                    variant="outlined"
+                    value={item.name}
+                    onChange={onTextChange}
+                />
             </Grid>
             <Grid className={classes.row}>
-                <TextField label="Description" variant="outlined" />
+                <TextField
+                    label="Description"
+                    name="description"
+                    variant="outlined"
+                    value={item.description}
+                    onChange={onTextChange}
+                />
             </Grid>
             <Grid container justify="center" className={classes.row}>
                 <Grid item xs={8}>
@@ -66,9 +81,9 @@ const AddStationeryForm = ({
                                     size="medium"
                                     color="primary"
                                     className={classes.button}
-                                    onClick={onImportClick}
+                                    onClick={item.id === 0 ? onSaveClick : onEditClick}
                                 >
-                                    Save
+                                    {item.id === 0 ? 'Save' : 'Edit'}
                                 </Button>
                             )
                     }

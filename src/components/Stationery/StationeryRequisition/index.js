@@ -10,37 +10,40 @@ import AddIcon from '@material-ui/icons/Add';
 
 
 // custom imports
-import AddStationeryForm from './AddStationeryForm';
-import EnhancedTableHead from '../EnhancedTableHead';
-import EnhancedTableToolbar from '../EnhancedTableToolbar';
-import PanelHeader from '../PanelHeader';
-import Alert from '../Alert'
+import AddRequisitionForm from './AddStationeryRequisition';
+import EnhancedTableHead from '../../EnhancedTableHead';
+import EnhancedTableToolbar from '../../EnhancedTableToolbar';
+import PanelHeader from '../../PanelHeader';
+import Alert from '../../Alert'
 
 // styles
-import { StationeryListStyles } from './stationeryListStyles';
+import { StationeryListStyles } from '../stationeryListStyles';
 
 // utils
-import { getComparator, stableSort } from '../../utils';
+import { getComparator, stableSort, formatDate } from '../../../utils';
 
-const StationeryList = ({
-    item,
+const Listing = ({
     error,
     classes,
     success,
-    onItemAdd,
+    onRowAdd,
     isLoading,
     stationery,
-    onItemEdit,
+    requisition,
     showAddForm,
-    onItemDelete,
+    onRowDelete,
+    requisitions,
     onHandleChange,
     onAddFormClose,
     onSnackBarClose,
-    onItemEditClick,
+    onRequisitionAdd,
     handlePopperClose,
-    onShowAddFormClick,
+    onRequisitionEdit,
+    onRequisitionDelete,
+    onRequsitionEditClick,
+    onShowAddRequisitionClick,
+    
 }) => {
-
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [selected, setSelected] = React.useState([]);
@@ -49,7 +52,10 @@ const StationeryList = ({
 
     const headCells = [
         { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-        { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
+        { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
+        { id: 'authorized', numeric: false, disablePadding: false, label: 'Authorized' },
+        { id: 'approved', numeric: false, disablePadding: false, label: 'Approved' },
+        { id: 'issued', numeric: false, disablePadding: false, label: 'Issued' },
     ];
 
     const handleRequestSort = (_, property) => {
@@ -60,7 +66,7 @@ const StationeryList = ({
 
     const handleSelectAllClick = event => {
         if (event.target.checked) {
-            const newSelecteds = stationery.map(n => n);
+            const newSelecteds = requisitions.map(n => n);
             setSelected(newSelecteds);
             return;
         }
@@ -98,7 +104,7 @@ const StationeryList = ({
 
     const isSelected = id => selected.map(i => i.id).indexOf(id) !== -1;
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, stationery.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, requisitions.length - page * rowsPerPage);
 
     return (
         <div className={classes.root}>
@@ -125,16 +131,16 @@ const StationeryList = ({
                     variant="outlined"
                     color="secondary"
                     startIcon={<AddIcon />}
-                    onClick={onShowAddFormClick}
+                    onClick={onShowAddRequisitionClick}
                 >
                     New
                 </Button>
                 <EnhancedTableToolbar
-                    title="Stationery"
+                    title="Stationery Requisitions"
                     selected={selected}
                     numSelected={selected.length}
-                    onEditClick={onItemEditClick}
-                    onDeleteClick={onItemDelete}
+                    onEditClick={onRequsitionEditClick}
+                    onDeleteClick={onRequisitionDelete}
                 />
                 <TableContainer>
                     <Table
@@ -149,24 +155,24 @@ const StationeryList = ({
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={stationery.length}
+                            rowCount={requisitions.length}
                             headCells={headCells}
                         />
                         <TableBody>
-                            {stableSort(stationery, getComparator(order, orderBy))
+                            {stableSort(requisitions, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((item, index) => {
-                                    const isItemSelected = isSelected(item.id);
+                                .map((requisition, index) => {
+                                    const isItemSelected = isSelected(requisition.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={event => handleClick(event, item)}
+                                            onClick={event => handleClick(event, requisition)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={item.name}
+                                            key={requisition.id}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">
@@ -176,9 +182,24 @@ const StationeryList = ({
                                                 />
                                             </TableCell>
                                             <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                {item.name}
+                                                {requisition.name}
                                             </TableCell>
-                                            <TableCell>{item.description}</TableCell>
+                                            <TableCell>{formatDate(requisition.requisition_date)}</TableCell>
+                                            <TableCell>
+                                                {
+                                                    requisition.authorized_by === null ? "Pending": requisition.authorized_by
+                                                }
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    requisition.approved_by === null ? "Pending": "Approved"
+                                                }
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    requisition.issued_by === null ? "Pending": "Issued"
+                                                }
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -193,26 +214,29 @@ const StationeryList = ({
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={stationery.length}
+                    count={requisitions.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
 
-                <AddStationeryForm
-                    item={item}
+                <AddRequisitionForm
+                    classes={classes}
                     open={showAddForm}
                     loading={isLoading}
-                    classes={classes}
+                    onRowAdd={onRowAdd}
+                    stationery={stationery}
+                    requisition={requisition}
+                    onRowDelete={onRowDelete}
                     onTextChange={onHandleChange}
-                    onSaveClick={onItemAdd}
-                    onEditClick={onItemEdit}
+                    onSaveClick={onRequisitionAdd}
+                    onEditClick={onRequisitionEdit}
                     onPopoverCloseClick={onAddFormClose}
                 />
             </Paper>
         </div >
     );
-}
+};
 
-export default withStyles(StationeryListStyles)(StationeryList);
+export default withStyles(StationeryListStyles)(Listing);

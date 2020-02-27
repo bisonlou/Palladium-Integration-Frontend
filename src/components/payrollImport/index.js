@@ -95,8 +95,7 @@ const Payrollimport = ({
                         className={classes.selectField}
                         onChange={onValueChange}
                     >{
-                            // years.map(year => (
-                            [].map(year => (
+                            years.map(year => (
                                 <MenuItem
                                     key={year}
                                     value={year}

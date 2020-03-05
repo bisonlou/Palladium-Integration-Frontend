@@ -8,6 +8,7 @@ import {
 // custom components
 import StationeryList from './StationeryList';
 import StationeryRequisition from './StationeryRequisition';
+import {ExcelRenderer} from 'react-excel-renderer';
 
 // styles
 import StationeryStyles from './stationeryStyles';
@@ -48,8 +49,10 @@ const StationeryRequisitionListing = ({
     const [value, setValue] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [stationery, setStationery] = useState([]);
+    const [excelData, setExcelData] = useState([]);
     const [requisitions, setRequisitions] = useState([]);
     const [showAddStationeryForm, setShowAddStationeryForm] = useState(false);
+    const [showUploadStationeryForm, setShowUploadStationeryForm] = useState(false);
     const [showAddRequisitionForm, setShowAddRequisitionForm] = useState(false);
     const [item, setItem] = useState({
         id: 0,
@@ -322,6 +325,26 @@ const StationeryRequisitionListing = ({
         });
     };
 
+    const handleBulkUpload = event => {
+        fetch(`${BASE_URL}/stationery_uploads`, {
+            method: 'POST',
+            body: JSON.stringify({ 'items': excelData }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data['success'] === true) {
+                    setSuccess({ isSuccess: true, message: "items uploaded successfuly"});
+                }
+                else {
+                    setError({isError: true, message: "upload failed"});
+                }
+            })
+            .catch(error => console.log('-->', error))
+    }
+
 
     const handleEditItemClick = item => {
         setItem({
@@ -342,6 +365,10 @@ const StationeryRequisitionListing = ({
         setShowAddStationeryForm(true);
     };
 
+    const handleShowUploadFormClick = () => {
+        setShowUploadStationeryForm(true);
+    };
+
     const handleShowAddRequisitionFormClick = () => {
         setRequisition(initialRequisition);
         setShowAddRequisitionForm(true);
@@ -349,6 +376,10 @@ const StationeryRequisitionListing = ({
 
     const handleAddStationeryFormClose = () => {
         setShowAddStationeryForm(false);
+    };
+
+    const handleUploadStationeryFormClose = () => {
+        setShowUploadStationeryForm(false);
     };
 
     const handleAddRequisitionFormClose = () => {
@@ -379,6 +410,28 @@ const StationeryRequisitionListing = ({
     const handleValueChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const handleFileChange = event => {
+        const fileObj = event.target.files[0];
+
+        ExcelRenderer(fileObj, (err, resp) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                const data = [];
+
+                for (let i = 1; i < resp.rows.length; i++) {
+                    data.push({
+                        'name': resp.rows[i][0],
+                        'description': resp.rows[i][1],
+                    });
+                }
+                setExcelData(data);
+            }
+        });
+    };
+
 
     return (
         <Popover
@@ -415,15 +468,20 @@ const StationeryRequisitionListing = ({
                         isLoading={isLoading}
                         stationery={stationery}
                         showAddForm={showAddStationeryForm}
+                        showUploadForm={showUploadStationeryForm}
                         onItemAdd={handleItemAdd}
+                        onUpload={handleBulkUpload}
                         onItemEdit={handleItemEdit}
                         onHandleChange={handleChange}
+                        onFileChange={handleFileChange}
                         handlePopperClose={handleClose}
                         onItemDelete={handleItemDelete}
                         onAddFormClose={handleAddStationeryFormClose}
+                        onUploadFormClose={handleUploadStationeryFormClose}
                         onSnackBarClose={handleSnackBarClose}
                         onItemEditClick={handleEditItemClick}
                         onShowAddFormClick={handleShowAddFormClick}
+                        onShowUploadFormClick={handleShowUploadFormClick}
                     />
                 </TabPanel>
                 <TabPanel value={value} index={1}>

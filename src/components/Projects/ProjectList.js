@@ -10,41 +10,37 @@ import AddIcon from '@material-ui/icons/Add';
 
 
 // custom imports
-import AddStationeryForm from './AddStationeryForm';
-import UploadStationeryForm from './UploadStationeryForm';
+import AddProjectForm from './AddProjectForm';
 import EnhancedTableHead from '../EnhancedTableHead';
 import EnhancedTableToolbar from '../EnhancedTableToolbar';
 import PanelHeader from '../PanelHeader';
 import Alert from '../Alert'
 
 // styles
-import { StationeryListStyles } from './stationeryListStyles';
+import { ProjectListStyles } from './projectListStyles';
 
 // utils
-import { getComparator, stableSort } from '../../utils';
+import { getComparator, stableSort, formatDate } from '../../utils';
 
-const StationeryList = ({
-    item,
+const ProjectList = ({
+    project,
     error,
     classes,
     success,
-    onItemAdd,
-    onUpload,
+    onProjectAdd,
     isLoading,
-    stationery,
-    onItemEdit,
+    projects,
+    onProjectEdit,
     showAddForm,
-    showUploadForm,
-    onFileChange,
-    onItemDelete,
+    onProjectDelete,
     onHandleChange,
     onAddFormClose,
-    onUploadFormClose,
     onSnackBarClose,
-    onItemEditClick,
+    onProjectEditClick,
     handlePopperClose,
     onShowAddFormClick,
-    onShowUploadFormClick,
+    onStartDateChange,
+    onEndDateChange,
 }) => {
 
     const [order, setOrder] = React.useState('asc');
@@ -54,8 +50,10 @@ const StationeryList = ({
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     const headCells = [
-        { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-        { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
+        { id: 'project_name', numeric: false, disablePadding: true, label: 'Project' },
+        { id: 'client_name', numeric: false, disablePadding: true, label: 'Client' },
+        { id: 'start_date', numeric: false, disablePadding: true, label: 'Start' },
+        { id: 'end_date', numeric: false, disablePadding: true, label: 'End' },
     ];
 
     const handleRequestSort = (_, property) => {
@@ -66,7 +64,7 @@ const StationeryList = ({
 
     const handleSelectAllClick = event => {
         if (event.target.checked) {
-            const newSelecteds = stationery.map(n => n);
+            const newSelecteds = projects.map(n => n);
             setSelected(newSelecteds);
             return;
         }
@@ -104,7 +102,7 @@ const StationeryList = ({
 
     const isSelected = id => selected.map(i => i.id).indexOf(id) !== -1;
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, stationery.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, projects.length - page * rowsPerPage);
 
     return (
         <div className={classes.root}>
@@ -135,20 +133,13 @@ const StationeryList = ({
                 >
                     New
                 </Button>
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    startIcon={<AddIcon />}
-                    onClick={onShowUploadFormClick}
-                >
-                    Bulk Upload
-                </Button>
+                
                 <EnhancedTableToolbar
-                    title="Stationery"
+                    title="Projects"
                     selected={selected}
                     numSelected={selected.length}
-                    onEditClick={onItemEditClick}
-                    onDeleteClick={onItemDelete}
+                    onEditClick={onProjectEditClick}
+                    onDeleteClick={onProjectDelete}
                 />
                 <TableContainer>
                     <Table
@@ -163,24 +154,24 @@ const StationeryList = ({
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={stationery.length}
+                            rowCount={projects.length}
                             headCells={headCells}
                         />
                         <TableBody>
-                            {stableSort(stationery, getComparator(order, orderBy))
+                            {stableSort(projects, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((item, index) => {
-                                    const isItemSelected = isSelected(item.id);
+                                .map((project, index) => {
+                                    const isItemSelected = isSelected(project.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={event => handleClick(event, item)}
+                                            onClick={event => handleClick(event, project)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={item.name}
+                                            key={project.project_name}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">
@@ -190,9 +181,11 @@ const StationeryList = ({
                                                 />
                                             </TableCell>
                                             <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                {item.name}
+                                                {project.project_name}
                                             </TableCell>
-                                            <TableCell>{item.description}</TableCell>
+                                            <TableCell>{project.client_name}</TableCell>
+                                            <TableCell>{formatDate(project.start_date)}</TableCell>
+                                            <TableCell>{formatDate(project.end_date)}</TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -207,35 +200,28 @@ const StationeryList = ({
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={stationery.length}
+                    count={projects.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
 
-                <AddStationeryForm
-                    item={item}
+                <AddProjectForm
+                    project={project}
                     open={showAddForm}
                     loading={isLoading}
                     classes={classes}
                     onTextChange={onHandleChange}
-                    onSaveClick={onItemAdd}
-                    onEditClick={onItemEdit}
+                    onSaveClick={onProjectAdd}
+                    onEditClick={onProjectEdit}
+                    onStartDateChange={onStartDateChange}
+                    onEndDateChange={onEndDateChange}
                     onPopoverCloseClick={onAddFormClose}
-                />
-
-                <UploadStationeryForm
-                    open={showUploadForm}
-                    loading={isLoading}
-                    classes={classes}
-                    onFileChange={onFileChange}
-                    onUploadClick={onUpload}
-                    onPopoverCloseClick={onUploadFormClose}
                 />
             </Paper>
         </div >
     );
 }
 
-export default withStyles(StationeryListStyles)(StationeryList);
+export default withStyles(ProjectListStyles)(ProjectList);

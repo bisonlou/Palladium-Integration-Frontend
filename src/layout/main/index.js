@@ -7,13 +7,18 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 // custom components
 import PayrolImport from '../../components/payrollImport';
-import PayrollImportCard from '../../components/Cards/payrollImport';
-import StationeryRequisitionCard from '../../components/Cards/stationeryRequisition';
+import IconCard from '../../components/Cards/IconCard';
 import Stationery from '../../components/Stationery';
+import Projects from '../../components/Projects';
 import NavBar from '../../components/NavBar';
 
 // utils
 import { BASE_URL, dateToString } from '../../utils';
+
+// images
+import stationeryImg from '../../images/stationery.jpg';
+import importImg from '../../images/import.jpg';
+import projectImg from '../../images/projects.jpg';
 
 
 const useStyles = makeStyles({
@@ -35,6 +40,7 @@ const Main = () => {
 
     const [showPayrollImport, setShowPayrollImport] = useState(false);
     const [showStationery, setShowStationery] = useState(false);
+    const [showProjects, setShowProjects] = useState(false);
     const [journalDate, setjournalDate] = useState(dateToString(new Date()));
     const [month, setMonth] = useState(new Date().getMonth());
     const [year, setYear] = useState(new Date().getFullYear());
@@ -62,6 +68,10 @@ const Main = () => {
 
     const handleStationeryOpen = () => {
         setShowStationery(true);
+    }
+
+    const handleProjectsOpen = () => {
+        setShowProjects(true);
     }
 
     const handlePopoverCloseClick = () => {
@@ -140,6 +150,10 @@ const Main = () => {
         setShowStationery(false);
     };
 
+    const handleProjectsClose = () => {
+        setShowProjects(false);
+    };
+
     return (
         <div className="App">
             <NavBar />
@@ -175,16 +189,29 @@ const Main = () => {
 
             <Grid container >
                 <Grid item xs={3}>
-                    <PayrollImportCard
+                    <IconCard
                         classes={classes}
+                        title="Payroll"
+                        iconImage={importImg}
                         onCardClick={handlePayrollImportOpen}
                     />
                 </Grid>
 
                 <Grid item xs={3}>
-                    <StationeryRequisitionCard
+                    <IconCard
                         classes={classes}
+                        title="Stationery"
+                        iconImage={stationeryImg}
                         onCardClick={handleStationeryOpen}
+                    />
+                </Grid>
+
+                <Grid item xs={3}>
+                    <IconCard
+                        classes={classes}
+                        title="Projects"
+                        iconImage={projectImg}
+                        onCardClick={handleProjectsOpen}
                     />
                 </Grid>
             </Grid>
@@ -205,6 +232,11 @@ const Main = () => {
             <Stationery
                 open={showStationery}
                 handleClose={handleStationeryClose}
+            />
+
+            <Projects
+                open={showProjects}
+                handleClose={handleProjectsClose}
             />
         </div>
     );

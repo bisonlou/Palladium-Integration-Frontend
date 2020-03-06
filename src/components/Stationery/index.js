@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 // 3rd party components
 import {
-    Popover, withStyles, Tabs, Tab, Typography, Box
+    Popover, withStyles, Tabs, Tab
 } from '@material-ui/core';
 
 // custom components
 import StationeryList from './StationeryList';
+import TabPanel from '../TabPanel';
 import StationeryRequisition from './StationeryRequisition';
 import {ExcelRenderer} from 'react-excel-renderer';
 
@@ -16,23 +17,6 @@ import StationeryStyles from './stationeryStyles';
 // utils
 import { BASE_URL, formatDate, getSessionInfo } from '../../utils';
 
-
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <Typography
-            component="div"
-            role="tabpanel"
-            hidden={value !== index}
-            id={`vertical-tabpanel-${index}`}
-            aria-labelledby={`vertical-tab-${index}`}
-            {...other}
-        >
-            {value === index && <Box p={3}>{children}</Box>}
-        </Typography>
-    );
-}
 
 const StationeryRequisitionListing = ({
     open,

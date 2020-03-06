@@ -2,35 +2,19 @@ import React, { useState, useEffect } from 'react';
 
 // 3rd party components
 import {
-    Popover, withStyles, Tabs, Tab, Typography, Box
+    Popover, withStyles, Tabs, Tab
 } from '@material-ui/core';
 
 // custom components
 import ProjectList from './ProjectList';
+import TabPanel from '../TabPanel';
 
 // styles
 import ProjectStyles from './projectStyles';
 
 // utils
-import { BASE_URL, formatDate, dateToString } from '../../utils';
+import { BASE_URL, formatDate } from '../../utils';
 
-
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <Typography
-            component="div"
-            role="tabpanel"
-            hidden={value !== index}
-            id={`vertical-tabpanel-${index}`}
-            aria-labelledby={`vertical-tab-${index}`}
-            {...other}
-        >
-            {value === index && <Box p={3}>{children}</Box>}
-        </Typography>
-    );
-}
 
 const Projects = ({
     open,
@@ -112,11 +96,12 @@ const Projects = ({
             .then(response => response.json())
             .then(data => {
                 if (data['success'] === true) {
-                    setIsLoading(false);
                     setProjects([...projects, project]);
                     setProject(initialProject);
                     setSuccess({ isSuccess: true, message: "Project successfuly added!" });
                     fetchProjects();
+                    setIsLoading(false);
+                    setShowAddProjectForm(false)
                 } else {
                     setIsLoading(false);
                     setError({ isError: true, message: data['description'] });
@@ -130,6 +115,9 @@ const Projects = ({
 
 
     const handleProjectEdit = () => {
+        setIsLoading(true);
+        console.log(project);
+
         fetch(
             `${BASE_URL}/projects/${project.id}`,
             {
@@ -143,12 +131,36 @@ const Projects = ({
             .then(response => response.json())
             .then(data => {
                 if (data['success'] === true) {
-                    fetchProjects();
+                    setProjects(projects.map(p => {
+                        if (p.id === project.id) {
+                            p.project_name = project.project_name
+                            p.country = project.country
+                            p.client_name = project.client_name
+                            p.contact_person_name = project.contact_person_name
+                            p.contact_person_title = project.contact_person_title
+                            p.contact_person_tel = project.contact_person_tel
+                            p.consultant_months = project.consultant_months
+                            p.start_date = project.start_date
+                            p.end_date = project.end_date
+                            p.contract_value = project.contract_value
+                            p.staff_months = project.staff_months
+                            p.senior_proffesional = project.senior_proffesional
+                            p.project_description = project.project_description
+                            p.service_description = project.service_description
+                            p.remarks = project.remarks
+                            p.associate_consultants = project.associate_consultants
+                        }
+
+                        return p;
+                    }));
+                    setIsLoading(false);
+                    setShowAddProjectForm(false);
                 } else {
                     setError({
                         isError: true,
                         message: 'Edit failed!'
                     })
+                    setIsLoading(false);
                 }
             })
             .catch(error => setError({
@@ -188,30 +200,38 @@ const Projects = ({
     };
 
     const handleEditProjectClick = project => {
-        const { project_name, country, client_name, contact_person_name,
+        const { id, project_name, country, client_name, contact_person_name,
             contact_person_title, contact_person_tel, start_date, end_date,
-            contract_value, staff_months, senior_proffesional, associate_consultants
+            contract_value, staff_months, senior_proffesional, associate_consultants,
+            consultant_months, project_description, service_description, remarks,
         } = project;
 
         setProject({
+            id: id,
             project_name: project_name,
             country: country,
             client_name: client_name,
             contact_person_name: contact_person_name,
             contact_person_title: contact_person_title,
             contact_person_tel: contact_person_tel,
+            consultant_months: consultant_months,
             start_date: start_date,
             end_date: end_date,
             contract_value: contract_value,
             staff_months: staff_months,
             senior_proffesional: senior_proffesional,
+            project_description: project_description,
+            service_description: service_description,
+            remarks: remarks,
             associate_consultants: associate_consultants
         });
-
+        
         setShowAddProjectForm(true);
     };
 
     const handleShowAddFormClick = () => {
+
+        setProject(initialProject);
         setShowAddProjectForm(true);
     };
 
@@ -242,12 +262,12 @@ const Projects = ({
     };
 
     const handleStartDateChange = date => {
-        setProject(prevState => ({ ...prevState, start_date: dateToString(date) }));
+        setProject(prevState => ({ ...prevState, start_date: date }));
     };
 
     
     const handleEndDateChange = date => {
-        setProject(prevState => ({ ...prevState, end_date: dateToString(date) }));
+        setProject(prevState => ({ ...prevState, end_date: date }));
     };
 
     const handleValueChange = (event, newValue) => {

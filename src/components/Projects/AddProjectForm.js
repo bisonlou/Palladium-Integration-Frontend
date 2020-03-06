@@ -30,7 +30,7 @@ const AddProjectForm = ({
         <Popover
             open={open}
             anchorReference="anchorPosition"
-            anchorPosition={{ top: 100, left: 400 }}
+            anchorPosition={{ top: 100, left: 500 }}
             anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'left',
@@ -74,10 +74,10 @@ const AddProjectForm = ({
                 <Grid item xs={6}>
                     <TextField
                         label="Approx. Value"
-                        name="project_value"
+                        name="contract_value"
                         variant="outlined"
                         size="small"
-                        value={project.project_value}
+                        value={project.contract_value}
                         onChange={onTextChange}
                     />
                 </Grid>
@@ -117,7 +117,7 @@ const AddProjectForm = ({
                 spacing={1}
                 className={classes.row}
             >
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                     <TextField
                         label="Contact Person Name"
                         name="contact_person_name"
@@ -127,7 +127,7 @@ const AddProjectForm = ({
                         onChange={onTextChange}
                     />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                     <TextField
                         label="Contact Person Title"
                         name="contact_person_title"
@@ -137,13 +137,30 @@ const AddProjectForm = ({
                         onChange={onTextChange}
                     />
                 </Grid>
-                <Grid item xs={4}>
+            </Grid>
+
+            <Grid
+                container
+                spacing={1}
+                className={classes.row}
+            >
+                <Grid item xs={6}>
                     <TextField
                         label="Contact Person Tel"
                         name="contact_person_tel"
                         variant="outlined"
                         size="small"
                         value={project.contact_person_tel}
+                        onChange={onTextChange}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        label="Client"
+                        name="client_name"
+                        variant="outlined"
+                        size="small"
+                        value={project.client_name}
                         onChange={onTextChange}
                     />
                 </Grid>
@@ -160,9 +177,10 @@ const AddProjectForm = ({
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <KeyboardDatePicker
                                 margin="normal"
-                                id="date-picker-dialog"
                                 format="MM/dd/yyyy"
                                 name="start_date"
+                                label="Start Date"
+                                value={project.start_date}
                                 onChange={onStartDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
@@ -176,9 +194,10 @@ const AddProjectForm = ({
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <KeyboardDatePicker
                                 margin="normal"
-                                id="date-picker-dialog"
                                 format="MM/dd/yyyy"
                                 name="end_date"
+                                label="End Date"
+                                value={project.end_date}
                                 onChange={onEndDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
@@ -198,10 +217,10 @@ const AddProjectForm = ({
                 <Grid item xs={6}>
                     <TextField
                         label="Senior Professional Staff"
-                        name="senior_professional"
+                        name="senior_proffesional"
                         variant="outlined"
                         size="small"
-                        value={project.senior_professional}
+                        value={project.senior_proffesional}
                         onChange={onTextChange}
                     />
                 </Grid>
@@ -269,6 +288,27 @@ const AddProjectForm = ({
                         style={{ width: "100%" }}
                         size="small"
                         value={project.service_description}
+                        onChange={onTextChange}
+                    />
+                </Grid>
+            </Grid>
+
+            <Grid
+                container
+                spacing={2}
+                className={classes.row}
+                justify="flex-end"
+            >
+                <Grid item xs={12}>
+                    <TextField
+                        label="Remarks"
+                        name="remarks"
+                        variant="outlined"
+                        multiline
+                        rows="4"
+                        style={{ width: "100%" }}
+                        size="small"
+                        value={project.remarks}
                         onChange={onTextChange}
                     />
                 </Grid>
